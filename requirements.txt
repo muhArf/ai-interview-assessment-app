@@ -1,0 +1,12 @@
+streamlit
+librosa
+numpy
+pandas
+scikit-learn
+pydub
+noisereduce
+faster-whisper
+torch
+sentence-transformers
+rapidfuzz
+spellchecker
