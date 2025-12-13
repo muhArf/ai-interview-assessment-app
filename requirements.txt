@@ -4,10 +4,8 @@ numpy
 pandas
 pydub
 noisereduce
-
-# Model STT dan Dependensi
 faster-whisper
 torch
 sentence-transformers
 rapidfuzz
-spellchecker==0.9.0  # Coba kunci ke versi stabil yang populer
+pyspellchecker  <-- Ganti spellchecker
