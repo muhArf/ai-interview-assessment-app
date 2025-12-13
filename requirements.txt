@@ -8,4 +8,4 @@ faster-whisper
 torch
 sentence-transformers
 rapidfuzz
-pyspellchecker  <-- Ganti spellchecker
+pyspellchecker  
