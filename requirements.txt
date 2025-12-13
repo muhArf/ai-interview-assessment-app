@@ -2,11 +2,12 @@ streamlit
 librosa
 numpy
 pandas
-scikit-learn
 pydub
 noisereduce
+
+# Model STT dan Dependensi
 faster-whisper
 torch
 sentence-transformers
 rapidfuzz
-spellchecker
+spellchecker==0.9.0  # Coba kunci ke versi stabil yang populer
