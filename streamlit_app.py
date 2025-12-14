@@ -24,7 +24,6 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
     
-    # Placeholder untuk status pemrosesan
     status_placeholder = st.empty()
     status_placeholder.info("Mempersiapkan dan memproses file...")
 
@@ -62,21 +61,16 @@ if uploaded_file is not None:
             st.error(f"❌ Non-Verbal Analysis: Failed. {nonverbal_data.get('error')}")
 
 
-        # 2.3. CONFIDENCE SCORING (Modul Anda yang akan datang)
-        # status_placeholder.info("⏳ Menghitung Confidence Score dan Rubrik...")
-        # assessment_results["confidence_rubric"] = your_confidence_module.calculate_score(...)
-        # st.success("✅ Confidence Scoring: Complete")
-        
-        
-        status_placeholder.empty() # Hapus placeholder status
-        st.header("✨ Hasil Penilaian Wawancara")
-        
         # --- 3. TAMPILKAN HASIL ---
 
+        status_placeholder.empty() 
+        st.header("✨ Hasil Penilaian Wawancara")
+        
         # Tampilan 1: Transkripsi
         st.subheader("📝 Transkripsi Bersih")
-        if assessment_results["stt_transcript"].get("clean_transcript"):
-            st.markdown(assessment_results["stt_transcript"]["clean_transcript"])
+        clean_text_output = assessment_results["stt_transcript"].get("clean_transcript")
+        if clean_text_output:
+            st.markdown(clean_text_output)
         else:
             st.warning("Transkripsi tidak tersedia.")
             
