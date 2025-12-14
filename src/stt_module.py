@@ -19,12 +19,13 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 @st.cache_resource
 def load_whisper_model():
-    print("Loading WhisperModel (large-v3)…")
+    # Mengubah model dari "large-v3" menjadi "small.en"
+    print("Loading WhisperModel (small.en)…")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     compute_type = "float16" if device == "cuda" and torch.cuda.is_available() else "int8"
     
-    # Menggunakan model medium jika large-v3 terlalu besar untuk Streamlit Cloud gratis
-    model = WhisperModel("large-v3", device=device, compute_type=compute_type) 
+    # PERUBAHAN DI SINI: menggunakan model yang lebih kecil
+    model = WhisperModel("small.en", device=device, compute_type=compute_type) 
     print(f"✔ WhisperModel loaded. Running on: {device.upper()}")
     return model
 
@@ -96,7 +97,7 @@ def remove_duplicate_words(text):
     return " ".join(res)
 
 def clean_text(text, use_embedding_fix=True):
-    # Logika Text Cleaning (Sama seperti Colab Anda)
+    # Logika Text Cleaning
     text = text.lower()
     fillers = ["umm", "uh", "uhh", "erm", "hmm", "eee", "emmm", "yeah", "ah", "okay", "vic"]
     pattern = r"\b(" + "|".join(fillers) + r")\b"
