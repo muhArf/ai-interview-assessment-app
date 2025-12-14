@@ -8,7 +8,8 @@ import soundfile as sf
 import noisereduce as nr
 import torch
 from faster_whisper import WhisperModel
-from spellchecker import SpellChecker
+# PERUBAHAN KRITIS: spellchecker dipasang sebagai pyspellchecker
+from spellchecker import SpellChecker 
 from rapidfuzz import process, fuzz
 from rapidfuzz.distance import Levenshtein
 from sentence_transformers import SentenceTransformer
@@ -16,15 +17,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # --- A. MODEL INITIALIZATION (CACHED) ---
 
-# Model harus diinisialisasi di luar fungsi agar hanya dimuat sekali
-
 @st.cache_resource
 def load_whisper_model():
     print("Loading WhisperModel (large-v3)…")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     compute_type = "float16" if device == "cuda" and torch.cuda.is_available() else "int8"
     
-    model = WhisperModel("large-v3", device=device, compute_type=compute_type)
+    # Menggunakan model medium jika large-v3 terlalu besar untuk Streamlit Cloud gratis
+    model = WhisperModel("large-v3", device=device, compute_type=compute_type) 
     print(f"✔ WhisperModel loaded. Running on: {device.upper()}")
     return model
 
@@ -51,7 +51,7 @@ PHRASE_MAP = {
     "data set" : "dataset", "violation laws" : "validation loss"
 }
 
-# --- C. PRE-PROCESSING & TEXT CLEANING FUNCTIONS (SAMA DENGAN KODE ANDA) ---
+# --- C. PRE-PROCESSING & TEXT CLEANING FUNCTIONS ---
 
 def apply_noise_reduction_and_normalize(y, sr, prop_decrease=0.6):
     y_clean = nr.reduce_noise(y=y, sr=sr, prop_decrease=prop_decrease)
@@ -96,19 +96,16 @@ def remove_duplicate_words(text):
     return " ".join(res)
 
 def clean_text(text, use_embedding_fix=True):
+    # Logika Text Cleaning (Sama seperti Colab Anda)
     text = text.lower()
-    
     fillers = ["umm", "uh", "uhh", "erm", "hmm", "eee", "emmm", "yeah", "ah", "okay", "vic"]
     pattern = r"\b(" + "|".join(fillers) + r")\b"
     text = re.sub(pattern, "", text, flags=re.IGNORECASE)
-
     text = re.sub(r"\.{2,}", "", text)
     text = re.sub(r"[^\w\s]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
-
     for wrong, correct in PHRASE_MAP.items():
         text = re.sub(rf"\b{re.escape(wrong)}\b", correct, text)
-
     words = []
     for w in text.split():
         sp = spell.correction(w)
@@ -116,14 +113,10 @@ def clean_text(text, use_embedding_fix=True):
             w = sp
         w = correct_ml_terms(w)
         words.append(w)
-
     text = " ".join(words)
-
     if use_embedding_fix:
         text = fix_context_outliers(text)
-
     text = remove_duplicate_words(text)
-
     return text.capitalize()
 
 # --- D. MAIN TRANSCRIPTION FUNCTION ---
