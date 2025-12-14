@@ -2,7 +2,6 @@ import numpy as np
 import librosa
 import os
 import json
-import noisereduce as nr # Ditambahkan untuk konsistensi
 
 # --- 1. THRESHOLDS FOR QUALITATIVE INTERPRETATION ---
 
@@ -43,6 +42,7 @@ def analyze_audio(file_path, silence_threshold=0.015):
     """
     
     try:
+        # Load audio data
         y, sr = librosa.load(file_path, sr=16000)
         total_duration = len(y) / sr
 
@@ -67,7 +67,7 @@ def analyze_audio(file_path, silence_threshold=0.015):
         
         summary = f"{tempo_qualitative} tempo and {pause_qualitative}"
             
-        # Final Result Dictionary (Sesuai format JSON yang diminta)
+        # Final Result Dictionary
         result = {
             "tempo_bpm": f"{tempo:.2f} per minute",
             "total_pause_seconds": f"{total_silent_time_sec:.2f} seconds",
